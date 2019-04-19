@@ -30,11 +30,12 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: [true, 'password required']
+        required: [true, 'password required'],
+        hidden: true
     },
-    photo: {
+    image: {
         type: String,
-        default: 'public/images/noPicture.jpg'
+        default: 'N/A'
     },
     books: [{
         bookId: Number,
@@ -43,7 +44,12 @@ const userSchema = new mongoose.Schema({
     }]
 
 
-});
+}, {
+        toJSON: {
+            transform: true
+        }
+    });
+
 const hashPassword = (password) => {
     return bcrypt.hash(password, saltRounds);
 }
@@ -67,6 +73,11 @@ userSchema.static('verifyToken', async function (token) {
     const decoded = await verifyToken(token, secretKey);
     return this.findById(decoded);
 });
+
+userSchema.options.toJSON.transform = (doc, ret, options) => {
+    delete ret.password;
+    return ret;
+}
 const userModel = mongoose.model('User', userSchema);
 
 module.exports = userModel;
