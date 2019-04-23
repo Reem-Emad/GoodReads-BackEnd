@@ -18,14 +18,13 @@ router.post('/add', async function (req, res, next) {
     });
 });
 //get book by id
-router.post('/:id', async function (req, res, next) {
+router.get('/:id', async function (req, res, next) {
     const id = req.params.id;
     await booksModel.findById(id, (err, book) => {
         if (err) return next(createError(404, err.message));
         res.send(book);
     })
 })
-
 //update book
 router.patch('/:id', async function (req, res) {
     const id = req.params.id;
