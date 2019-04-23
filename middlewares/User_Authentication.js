@@ -2,6 +2,7 @@ const createError = require('http-errors');
 const userModel = require('../models/User');
 
 module.exports = async (req, res, next) => {
+
     try {
         if (!req.headers.authorization) return next(createError(401));
         const [, token] = req.headers.authorization.split(' ');

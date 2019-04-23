@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const util = require('util');
+const bookModel = require('./Book');
+
 const verifyToken = util.promisify(jwt.verify);
 const saltRounds = 10;
 const secretKey = process.env.JWT_Secret || 'secretkeysecretkey';
@@ -38,9 +40,9 @@ const userSchema = new mongoose.Schema({
         default: 'N/A'
     },
     books: [{
-        bookId: Number,
+        bookId: { type: mongoose.Schema.Types.ObjectId, ref: bookModel },
         rate: { type: Number, default: 0 },
-        status: String
+        status: { type: String, lowercase: true, enum: ['want to read', 'read', 'currently reading'] }
     }]
 
 
