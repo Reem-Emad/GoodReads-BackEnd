@@ -82,22 +82,26 @@ router.get('/books/currentlyreading', async function (req, res, next) {
 })
 
 router.post('/book/edit/:id', async function (req, res, next) {
+
   bookId = req.params.id;
   updated = req.body;
   const { status, rate } = updated;
 
   if (status) {
     req.user.books.find(book => {
-      if (book.id === bookId)
+      const id = book.bookId.toString();
+      if (id === bookId)
         book["status"] = status;
     })
   }
   if (rate) {
     req.user.books.find(book => {
-      if (book.id === bookId)
+      const id = book.bookId.toString();
+      if (id === bookId)
         book["rate"] = rate;
     })
   }
+
   userModel.findByIdAndUpdate(req.user._id, { books: req.user.books }, { new: true }, (err, result) => {
     if (err) next(createError(404, err.message));
     res.send(result);
