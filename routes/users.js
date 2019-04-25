@@ -6,6 +6,7 @@ const bookModel = require('../models/Book');
 const authMiddleware = require('../middlewares/User_Authentication');
 
 router.post('/register', async function (req, res, next) {
+  debugger;
   await userModel.create(req.body, function (err, user) {
     if (err) return next(createError(400, err.message));
     res.send(user);
@@ -29,20 +30,20 @@ router.post('/login', async function (req, res, next) {
 });
 router.use(authMiddleware);
 
-router.get('/profile', async function (req, res, next) {
+router.get('/profile', function (req, res, next) {
   userModel.findById(req.user._id).populate('books.bookId')
     .exec()
     .then(docs => { res.send(docs) })
     .catch(err => { next(createError(404, err.message)) })
 })
-router.get('/books/all', async function (req, res, next) {
+router.get('/books/all', function (req, res, next) {
   userModel.findById(req.user._id).populate('books.bookId')
     .exec()
     .then(docs => { res.send(docs.books) })
     .catch(err => { next(createError(404, err.message)) })
 })
 
-router.get('/books/read', async function (req, res, next) {
+router.get('/books/read', function (req, res, next) {
   userModel.findById(req.user._id).populate('books.bookId')
     .exec()
     .then(docs => {
@@ -55,7 +56,7 @@ router.get('/books/read', async function (req, res, next) {
 
 })
 
-router.get('/books/wanttoread', async function (req, res, next) {
+router.get('/books/wanttoread', function (req, res, next) {
   userModel.findById(req.user._id).populate('books.bookId')
     .exec()
     .then(docs => {
@@ -68,7 +69,7 @@ router.get('/books/wanttoread', async function (req, res, next) {
 
 })
 
-router.get('/books/currentlyreading', async function (req, res, next) {
+router.get('/books/currentlyreading', function (req, res, next) {
   userModel.findById(req.user._id).populate('books.bookId')
     .exec()
     .then(docs => {
@@ -81,7 +82,7 @@ router.get('/books/currentlyreading', async function (req, res, next) {
 
 })
 
-router.post('/book/edit/:id', async function (req, res, next) {
+router.post('/book/edit/:id', function (req, res, next) {
 
   bookId = req.params.id;
   updated = req.body;
@@ -108,7 +109,7 @@ router.post('/book/edit/:id', async function (req, res, next) {
   })
 })
 
-router.post('/book/add', async function (req, res, next) {
+router.post('/book/add', function (req, res, next) {
   newBook = req.body;
   const { bookId, status } = newBook;
   req.user.books.push({ bookId: bookId, rate: 0, status: status });

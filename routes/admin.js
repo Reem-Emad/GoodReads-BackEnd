@@ -5,6 +5,7 @@ const adminModel = require('../models/Admin');
 const authMiddleware = require('../middlewares/Admin_Authentication');
 
 router.post('/register', async function (req, res, next) {
+  debugger;
   await adminModel.create(req.body, function (err, admin) {
     if (err) return next(createError(400, err.message));
     res.send(admin);
@@ -27,13 +28,6 @@ router.post('/login', async function (req, res, next) {
   })
 });
 router.use(authMiddleware);
-
-// router.get('/profile', async function (req, res, next) {
-//   adminModelModel.findById(req.user._id).populate('books.bookId')
-//     .exec()
-//     .then(docs => { res.send(docs) })
-//     .catch(err => { next(createError(404, err.message)) })
-// })
 
 
 module.exports = router;

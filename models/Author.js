@@ -9,7 +9,7 @@ const mongoose = require('mongoose');
 const authorSchema = new mongoose.Schema({
     FullName: {
         type: String,
-        required: [true, 'first name required'],
+        required: [true, 'name required'],
         unique: true
     },
     Image: {

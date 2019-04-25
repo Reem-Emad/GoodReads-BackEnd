@@ -2,13 +2,17 @@ var express = require('express');
 var router = express.Router();
 const createError = require('http-errors');
 const booksModel = require('../models/Book');
-
 //get all books
 router.get('/', async function (req, res, next) {
     await booksModel.find({}, function (err, books) {
         if (err) return next(createError(500, err.message));
         res.send(books);
     }).exec();
+
+
+
+
+
 });
 //add new book
 router.post('/add', async function (req, res, next) {
