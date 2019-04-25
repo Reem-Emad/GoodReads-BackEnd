@@ -8,6 +8,7 @@ const bookSchema = new mongoose.Schema({
     },
     author: {
         type: String,
+        ref: authorModel,
         required: [true, 'book author is required']
     },
     category: {
@@ -31,7 +32,7 @@ const bookSchema = new mongoose.Schema({
 }, { toJSON: { virtuals: true } });
 
 bookSchema.virtual('authorData', {
-    ref: authorModel,
+    ref: 'Author',
     localField: 'author',
     foreignField: 'FullName',
 
