@@ -26,7 +26,8 @@ const bookSchema = new mongoose.Schema({
         type: String
     },
     avgRate: {
-        type: Number
+        type: Number,
+        max: 5
     }
 
 }, { toJSON: { virtuals: true } });

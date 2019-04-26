@@ -11,7 +11,7 @@ router.post('/add', adminAuthorization, async function (req, res, next) {
         res.send(author);
     });
 });
-// router.use(authMiddleware);
+
 router.get('/', userAdminAuthorization, function (req, res, next) {
     authorModel.find({}).populate('bookData')
         .exec()

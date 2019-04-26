@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema({
     },
     books: [{
         bookId: { type: mongoose.Schema.Types.ObjectId, ref: bookModel },
-        rate: { type: Number, default: 0 },
+        rate: { type: Number, default: 0, max: 5 },
         status: { type: String, lowercase: true, enum: ['want to read', 'read', 'currently reading'] }
     }]
 
