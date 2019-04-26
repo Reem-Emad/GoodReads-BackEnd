@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const userModel = require('../models/User');
+const authorModel = require('../models/Author');
 
 const bookSchema = new mongoose.Schema({
     title: {
@@ -8,8 +8,8 @@ const bookSchema = new mongoose.Schema({
     },
     author: {
         type: String,
+        ref: authorModel,
         required: [true, 'book author is required']
-
     },
     category: {
         type: String,
@@ -28,6 +28,14 @@ const bookSchema = new mongoose.Schema({
     avgRate: {
         type: Number
     }
+
+}, { toJSON: { virtuals: true } });
+
+bookSchema.virtual('authorData', {
+    ref: 'Author',
+    localField: 'author',
+    foreignField: 'FullName',
+
 });
 
 const bookModel = mongoose.model('Book', bookSchema);

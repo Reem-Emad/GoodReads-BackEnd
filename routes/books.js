@@ -5,10 +5,10 @@ const booksModel = require('../models/Book');
 
 //get all books
 router.get('/', async function (req, res, next) {
-    await booksModel.find({}, function (err, books) {
-        if (err) return next(createError(500, err.message));
-        res.send(books);
-    }).exec();
+    booksModel.find({}).populate('authorData')
+        .exec()
+        .then(books => { res.send(books); })
+        .catch(err => { next(createError(404, err.message)); })
 });
 //add new book
 router.post('/add', async function (req, res, next) {
@@ -20,19 +20,20 @@ router.post('/add', async function (req, res, next) {
 //get book by id
 router.get('/:id', async function (req, res, next) {
     const id = req.params.id;
-    await booksModel.findById(id, (err, book) => {
-        if (err) return next(createError(404, err.message));
-        res.send(book);
-    })
+
+    booksModel.findById(id).populate('authorData')
+        .exec()
+        .then(book => { res.send(book); })
+        .catch(err => { next(createError(404, err.message)); })
+
 })
 //update book
 router.patch('/:id', async function (req, res) {
     const id = req.params.id;
-    await booksModel.findByIdAndUpdate(id, req.body, { new: true }, (err, book) => {
-        if (err) return next(createError(404, err.message));
-        // msg = req.body;
-        res.send(book);
-    })
+    await booksModel.findByIdAndUpdate(id, req.body, { new: true }).populate('authorData')
+        .exec()
+        .then(book => { res.send(book); })
+        .catch(err => { next(createError(404, err.message)); })
 })
 //delete book
 router.delete('/:id', async function (req, res) {

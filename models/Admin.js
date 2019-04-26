@@ -76,6 +76,6 @@ adminSchema.options.toJSON.transform = (doc, ret, options) => {
     delete ret.password;
     return ret;
 }
-const adminModel = mongoose.model('User', adminSchema);
+const adminModel = mongoose.model('Admin', adminSchema);
 
 module.exports = adminModel;

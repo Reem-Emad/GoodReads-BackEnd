@@ -4,7 +4,7 @@ const createError = require('http-errors');
 const authorModel = require('../models/Author');
 const authMiddleware = require('../middlewares/User_Authentication');
 
-router.post('/register', async function (req, res, next) {
+router.post('/add', async function (req, res, next) {
     await authorModel.create(req.body, function (err, author) {
         if (err) return next(createError(400, err.message));
         res.send(author);
