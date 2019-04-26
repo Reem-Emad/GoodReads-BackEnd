@@ -4,46 +4,50 @@ const createError = require('http-errors');
 const categoryModel = require('../models/Category');
 
 
-//get all categories
-router.get('/', function(req, res, next) {
-    categoryModel.find({})
-    .exec()
-    .then(categories =>res.send(categories))
-    .catch(err =>next(createError(500,err)));
-  });
+const userAdminAuthorization = require('../middlewares/Admin-User_Authentication');
+const adminAuthorization = require('../middlewares/Admin_Authentication');
 
-  //add category
-  router.post('/add',function(req, res, next) {
-    categoryModel.create(req.body)
-    .then(categories =>{
+
+//get all categories
+router.get('/', userAdminAuthorization, function (req, res, next) {
+  categoryModel.find({})
+    .exec()
+    .then(categories => res.send(categories))
+    .catch(err => next(createError(500, err)));
+});
+
+//add category
+router.post('/add', adminAuthorization, function (req, res, next) {
+  categoryModel.create(req.body)
+    .then(categories => {
       res.send(categories);
     })
-    .catch(err =>{
-          next(createError(400,err.message));
+    .catch(err => {
+      next(createError(400, err.message));
     });
-  });
+});
 
-  //update category
-  router.patch('/:id',(req,res,next)=>{
-    user
-    .findByIdAndUpdate(req.params.id,req.body,{new:true})
+//update category
+router.patch('/:id', adminAuthorization, (req, res, next) => {
+  categoryModel
+    .findByIdAndUpdate(req.params.id, req.body, { new: true })
     .exec()
-    .then(category =>res.send(category))
-    .catch(err => next(createError(400,err.message)));
-  });
+    .then(category => res.send(category))
+    .catch(err => next(createError(400, err.message)));
+});
 
-  //delete category
-  router.delete('/:id',(req,res,next)=>{
-    user.findByIdAndDelete(req.params.id)
-    .then(category=>res.send(category))
-    .catch(err=>next((createError(400,err.message))));
-  });
+//delete category
+router.delete('/:id', adminAuthorization, (req, res, next) => {
+  categoryModel.findByIdAndDelete(req.params.id)
+    .then(category => res.send(category))
+    .catch(err => next((createError(400, err.message))));
+});
 
-  //find by id
-  router.get('/:id',(req,res,next)=>{
-    user.findById(req.params.userId)
-    .then(category=>res.send(category))
-    .catch(err => next(createError(404,err.message)));
-  });
+//find by id
+router.get('/:id', userAdminAuthorization, (req, res, next) => {
+  categoryModel.findById(req.params.userId)
+    .then(category => res.send(category))
+    .catch(err => next(createError(404, err.message)));
+});
 
-  module.exports = router;
+module.exports = router;
