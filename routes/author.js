@@ -12,7 +12,8 @@ router.post('/add', async function (req, res, next) {
 });
 // router.use(authMiddleware);
 router.get('/', function (req, res, next) {
-    authorModel.find({})
+    authorModel.find({}).populate('bookData')
+        .exec()
         .then(author => {
             res.send(author);
         })
@@ -21,7 +22,8 @@ router.get('/', function (req, res, next) {
         })
 });
 router.get('/:authorId', (req, res, next) => {
-    authorModel.findById(req.params.authorId)
+    authorModel.findById(req.params.authorId).populate('bookData')
+        .exec()
         .then(author => {
             res.send(author);
         })
@@ -30,7 +32,8 @@ router.get('/:authorId', (req, res, next) => {
         })
 })
 router.patch('/:authorId', (req, res, next) => {
-    authorModel.findByIdAndUpdate(req.params.authorId, req.body, { new: true })
+    authorModel.findByIdAndUpdate(req.params.authorId, req.body, { new: true }).populate('bookData')
+        .exec()
         .then(author => {
             res.send(author);
         })
