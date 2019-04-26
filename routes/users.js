@@ -14,6 +14,7 @@ router.post('/register', async function (req, res, next) {
 });
 
 router.post('/login', async function (req, res, next) {
+  
   const { email, password } = req.body;
   const currentUser = await userModel.findOne({ email });
   if (!currentUser)
@@ -28,6 +29,7 @@ router.post('/login', async function (req, res, next) {
     token
   })
 });
+
 router.use(authMiddleware);
 
 router.get('/profile', function (req, res, next) {
