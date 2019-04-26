@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const bookModel = require('./Book');
 
 const authorSchema = new mongoose.Schema({
     FullName: {
@@ -11,10 +11,11 @@ const authorSchema = new mongoose.Schema({
         type: String,
         default: 'N/A'
     },
-    NumberOfBooks: {
-        type: Number,
-        required: false
-    },
+    Books: [{
+        type: String,
+        ref: bookModel,
+        required: true
+    }],
     NumberOfFriends: {
         type: Number,
         required: false
@@ -38,6 +39,12 @@ const authorSchema = new mongoose.Schema({
     Description: {
         type: String,
     }
+}, { toJSON: { virtuals: true } });
+authorSchema.virtual('bookData', {
+    ref: 'Book',
+    localField: 'FullName',
+    foreignField: 'author',
+
 });
 
 const authorModel = mongoose.model('Author', authorSchema);
