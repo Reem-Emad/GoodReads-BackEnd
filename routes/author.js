@@ -11,9 +11,10 @@ router.post('/add', adminAuthorization, async function (req, res, next) {
         res.send(author);
     });
 });
-
+// router.use(authMiddleware);
 router.get('/', userAdminAuthorization, function (req, res, next) {
-    authorModel.find({})
+    authorModel.find({}).populate('bookData')
+        .exec()
         .then(author => {
             res.send(author);
         })
@@ -22,7 +23,8 @@ router.get('/', userAdminAuthorization, function (req, res, next) {
         })
 });
 router.get('/:authorId', userAdminAuthorization, (req, res, next) => {
-    authorModel.findById(req.params.authorId)
+    authorModel.findById(req.params.authorId).populate('bookData')
+        .exec()
         .then(author => {
             res.send(author);
         })
@@ -31,7 +33,8 @@ router.get('/:authorId', userAdminAuthorization, (req, res, next) => {
         })
 })
 router.patch('/:authorId', adminAuthorization, (req, res, next) => {
-    authorModel.findByIdAndUpdate(req.params.authorId, req.body, { new: true })
+    authorModel.findByIdAndUpdate(req.params.authorId, req.body, { new: true }).populate('bookData')
+        .exec()
         .then(author => {
             res.send(author);
         })
@@ -39,7 +42,7 @@ router.patch('/:authorId', adminAuthorization, (req, res, next) => {
             next(createerror(500, err));
         })
 })
-router.delete('/:authorId', adminAuthorization, (req, res, next) => {
+router.delete('/:authorId', adminAuthorization, adminAuthorization, (req, res, next) => {
     authorModel.findByIdAndDelete(req.params.authorId)
         .then(author => {
             res.send(author);
