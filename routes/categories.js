@@ -6,7 +6,7 @@ const categoryModel = require('../models/Category');
 
 //get all categories
 router.get('/', function(req, res, next) {
-    categoryModel.find({})
+    categoryModel.find({}).populate('bookData')
     .exec()
     .then(categories =>res.send(categories))
     .catch(err =>next(createError(500,err)));
@@ -26,7 +26,7 @@ router.get('/', function(req, res, next) {
   //update category
   router.patch('/:id',(req,res,next)=>{
     user
-    .findByIdAndUpdate(req.params.id,req.body,{new:true})
+    .findByIdAndUpdate(req.params.id,req.body,{new:true}).populate('bookData')
     .exec()
     .then(category =>res.send(category))
     .catch(err => next(createError(400,err.message)));
@@ -41,7 +41,8 @@ router.get('/', function(req, res, next) {
 
   //find by id
   router.get('/:id',(req,res,next)=>{
-    user.findById(req.params.userId)
+    user.findById(req.params.userId).populate('bookData')
+    .exec()
     .then(category=>res.send(category))
     .catch(err => next(createError(404,err.message)));
   });
