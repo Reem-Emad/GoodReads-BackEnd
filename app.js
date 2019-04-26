@@ -8,6 +8,7 @@ const usersRouter = require('./routes/users');
 const adminRouter = require('./routes/admin');
 const authorRouter = require('./routes/author');
 const booksRouter = require('./routes/books');
+const categoriesRouter =require('./routes/categories');
 
 
 const createError = require('http-errors');
@@ -30,6 +31,7 @@ app.use('/api/users', usersRouter);
 app.use('/api/admins', adminRouter);
 app.use('/api/authors', authorRouter);
 app.use('/api/books', booksRouter);
+app.use('/api/categories',categoriesRouter);
 
 
 // catch 404 and forward to error handler
