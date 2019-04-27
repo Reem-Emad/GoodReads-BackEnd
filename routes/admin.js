@@ -5,7 +5,7 @@ const adminModel = require('../models/Admin');
 const authMiddleware = require('../middlewares/Admin_Authentication');
 
 router.post('/register', async function (req, res, next) {
-  debugger;
+  debug
   await adminModel.create(req.body, function (err, admin) {
     if (err) return next(createError(400, err.message));
     res.send(admin);

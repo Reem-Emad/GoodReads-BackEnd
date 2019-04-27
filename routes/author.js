@@ -32,6 +32,7 @@ router.get('/:authorId', userAdminAuthorization, (req, res, next) => {
             next(createerror(500, err));
         })
 })
+
 router.patch('/:authorId', adminAuthorization, (req, res, next) => {
     authorModel.findByIdAndUpdate(req.params.authorId, req.body, { new: true }).populate('bookData')
         .exec()

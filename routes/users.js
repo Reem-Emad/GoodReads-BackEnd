@@ -14,7 +14,7 @@ router.post('/register', async function (req, res, next) {
 });
 
 router.post('/login', async function (req, res, next) {
-  
+
   const { email, password } = req.body;
   const currentUser = await userModel.findOne({ email });
   if (!currentUser)
@@ -114,7 +114,20 @@ router.post('/book/edit/:id', function (req, res, next) {
 router.post('/book/add', function (req, res, next) {
   newBook = req.body;
   const { bookId, status } = newBook;
-  req.user.books.push({ bookId: bookId, rate: 0, status: status });
+
+
+  const found = req.user.books.find(function (book) {
+
+    if (book.bookId.toString() === bookId) {
+      if (book.status !== status)
+        book.status = status;
+
+      return book;
+    }
+  })
+  if (found === undefined)
+    req.user.books.push({ bookId: bookId, rate: 0, status: status });
+
   userModel.findByIdAndUpdate(req.user._id, { books: req.user.books }, { new: true }, (err, result) => {
     if (err) next(createError(404, err.message));
     res.send(result);
