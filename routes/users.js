@@ -5,8 +5,45 @@ const userModel = require('../models/User');
 const bookModel = require('../models/Book');
 const authMiddleware = require('../middlewares/User_Authentication');
 
-router.post('/register', async function (req, res, next) {
-  debugger;
+const multer = require('multer');
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+
+    cb(null, './uploads/');
+  },
+  filename: function (req, file, cb) {
+    cb(null, new Date().toISOString().replace(/:|\./g, '') + '.' + file.originalname);
+  }
+});
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+    cb(null, true); //save it
+  }
+  else {
+    cb(null, false); //don't save
+  }
+}
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 1024 * 1024 * 5 },
+  fileFilter: fileFilter
+});
+
+router.post('/register', upload.single('image'), async function (req, res, next) {
+  // console.log(req.body)
+  // // console.log(req.file)
+  // // debugger;
+  // const newUser = new userModel({
+  //   name: { fname: req.body.fname, lname: req.body.lname },
+  //   email: req.body.email,
+  //   password: req.body.password,
+  //   image: req.file.path
+  // })
+
+  // newUser.save()
+  //   .then(user => res.send(user))
+  //   .catch(err => next(createError(400, err.message)))
   await userModel.create(req.body, function (err, user) {
     if (err) return next(createError(400, err.message));
     res.send(user);
