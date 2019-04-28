@@ -75,51 +75,73 @@ router.get('/profile', function (req, res, next) {
     .then(docs => { res.send(docs) })
     .catch(err => { next(createError(404, err.message)) })
 })
-router.get('/books/all', function (req, res, next) {
-  userModel.findById(req.user._id).populate('books.bookId')
-    .exec()
-    .then(docs => { res.send(docs.books) })
-    .catch(err => { next(createError(404, err.message)) })
-})
+router.get('/books/:status', function (req, res, next) {
+  const status = req.params.status;
 
-router.get('/books/read', function (req, res, next) {
   userModel.findById(req.user._id).populate('books.bookId')
     .exec()
     .then(docs => {
-      res.send(docs.books.filter(book => {
-        if (book.status === 'read')
-          return book;
-      }))
+      if (status.toLowerCase() === 'all') {
+        res.send(docs.books.filter(book => {
+          if (book.bookId !== null)
+            return book;
+        }))
+      }
+      else {
+        res.send(docs.books.filter(book => {
+          if (book.bookId !== null && book.status === status.toLowerCase())
+            return book;
+        }))
+      }
+
     })
     .catch(err => { next(createError(404, err.message)) })
-
 })
+// router.get('/books/all', function (req, res, next) {
+//   userModel.findById(req.user._id).populate('books.bookId')
+//     .exec()
+//     .then(docs => { res.send(docs.books) })
+//     .catch(err => { next(createError(404, err.message)) })
+// })
 
-router.get('/books/wanttoread', function (req, res, next) {
-  userModel.findById(req.user._id).populate('books.bookId')
-    .exec()
-    .then(docs => {
-      res.send(docs.books.filter(book => {
-        if (book.status === 'want to read')
-          return book;
-      }))
-    })
-    .catch(err => { next(createError(404, err.message)) })
+// router.get('/books/read', function (req, res, next) {
+//   userModel.findById(req.user._id).populate('books.bookId')
+//     .exec()
+//     .then(docs => {
+//       res.send(docs.books.filter(book => {
+//         if (book.status === 'read')
+//           return book;
+//       }))
+//     })
+//     .catch(err => { next(createError(404, err.message)) })
 
-})
+// })
 
-router.get('/books/currentlyreading', function (req, res, next) {
-  userModel.findById(req.user._id).populate('books.bookId')
-    .exec()
-    .then(docs => {
-      res.send(docs.books.filter(book => {
-        if (book.status === 'currently reading')
-          return book;
-      }))
-    })
-    .catch(err => { next(createError(404, err.message)) })
+// router.get('/books/wanttoread', function (req, res, next) {
+//   userModel.findById(req.user._id).populate('books.bookId')
+//     .exec()
+//     .then(docs => {
+//       res.send(docs.books.filter(book => {
+//         if (book.status === 'want to read')
+//           return book;
+//       }))
+//     })
+//     .catch(err => { next(createError(404, err.message)) })
 
-})
+// })
+
+// router.get('/books/currentlyreading', function (req, res, next) {
+//   userModel.findById(req.user._id).populate('books.bookId')
+//     .exec()
+//     .then(docs => {
+//       res.send(docs.books.filter(book => {
+//         if (book.status === 'currently reading')
+//           return book;
+//       }))
+//     })
+//     .catch(err => { next(createError(404, err.message)) })
+
+// })
 
 router.post('/book/edit/:id', function (req, res, next) {
 
