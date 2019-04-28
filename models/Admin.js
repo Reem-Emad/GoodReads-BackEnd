@@ -45,6 +45,7 @@ const hashPassword = (password) => {
 }
 adminSchema.pre('save', async function () {
     const currentAdmin = this;
+    debugger;
     if (currentAdmin.isNew) {
         currentAdmin.password = await hashPassword(currentAdmin.password);
     }
