@@ -6,10 +6,12 @@ const userAdminAuthorization = require('../middlewares/Admin-User_Authentication
 const adminAuthorization = require('../middlewares/Admin_Authentication');
 
 router.post('/add', adminAuthorization, async function (req, res, next) {
+    debugger;
     await authorModel.create(req.body, function (err, author) {
         if (err) return next(createError(400, err.message));
         res.send(author);
     });
+    debugger;
 });
 
 router.get('/', userAdminAuthorization, function (req, res, next) {
