@@ -14,9 +14,13 @@ const authorSchema = new mongoose.Schema({
     Books: [{
         type: String,
         ref: bookModel,
-        required: true
+        required: false
     }],
     NumberOfFriends: {
+        type: Number,
+        required: false
+    },
+    NumberOfBooks: {
         type: Number,
         required: false
     },
@@ -34,7 +38,7 @@ const authorSchema = new mongoose.Schema({
         type: String,
     },
     MemberSince: {
-        type: Date,
+        type: String,
     },
     Description: {
         type: String,
