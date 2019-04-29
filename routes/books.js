@@ -45,7 +45,7 @@ router.get('/:id', userAdminAuthorization, async function (req, res, next) {
 
 });
 //update book
-router.patch('/:id', adminAuthorization, async function (req, res) {
+router.patch('/:id', adminAuthorization, async function (req, res,next) {
     const id = req.params.id;
     await booksModel.findByIdAndUpdate(id, req.body, { new: true }).populate('authorData')
         .exec()
@@ -53,7 +53,7 @@ router.patch('/:id', adminAuthorization, async function (req, res) {
         .catch(err => { next(createError(404, err.message)); })
 })
 //delete book
-router.delete('/:id', adminAuthorization, async function (req, res) {
+router.delete('/:id', adminAuthorization, async function (req, res,next) {
     const id = req.params.id;
     await booksModel.findByIdAndDelete(id, (err, result) => {
         if (err) return next(createError(404, err.message));
