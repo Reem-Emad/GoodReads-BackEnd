@@ -12,7 +12,7 @@ router.post('/add', adminAuthorization, async function (req, res, next) {
         res.send(author);
     });
     debugger;
-});
+}); 
 
 router.get('/', userAdminAuthorization, function (req, res, next) {
     authorModel.find({}).populate('bookData')
