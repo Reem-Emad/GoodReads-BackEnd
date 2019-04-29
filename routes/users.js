@@ -5,8 +5,45 @@ const userModel = require('../models/User');
 const bookModel = require('../models/Book');
 const authMiddleware = require('../middlewares/User_Authentication');
 
-router.post('/register', async function (req, res, next) {
-  debugger;
+const multer = require('multer');
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+
+    cb(null, './uploads/');
+  },
+  filename: function (req, file, cb) {
+    cb(null, new Date().toISOString().replace(/:|\./g, '') + '.' + file.originalname);
+  }
+});
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+    cb(null, true); //save it
+  }
+  else {
+    cb(null, false); //don't save
+  }
+}
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 1024 * 1024 * 5 },
+  fileFilter: fileFilter
+});
+
+router.post('/register', upload.single('image'), async function (req, res, next) {
+  // console.log(req.body)
+  // // console.log(req.file)
+  // // debugger;
+  // const newUser = new userModel({
+  //   name: { fname: req.body.fname, lname: req.body.lname },
+  //   email: req.body.email,
+  //   password: req.body.password,
+  //   image: req.file.path
+  // })
+
+  // newUser.save()
+  //   .then(user => res.send(user))
+  //   .catch(err => next(createError(400, err.message)))
   await userModel.create(req.body, function (err, user) {
     if (err) return next(createError(400, err.message));
     res.send(user);
@@ -38,51 +75,73 @@ router.get('/profile', function (req, res, next) {
     .then(docs => { res.send(docs) })
     .catch(err => { next(createError(404, err.message)) })
 })
-router.get('/books/all', function (req, res, next) {
-  userModel.findById(req.user._id).populate('books.bookId')
-    .exec()
-    .then(docs => { res.send(docs.books) })
-    .catch(err => { next(createError(404, err.message)) })
-})
+router.get('/books/:status', function (req, res, next) {
+  const status = req.params.status;
 
-router.get('/books/read', function (req, res, next) {
   userModel.findById(req.user._id).populate('books.bookId')
     .exec()
     .then(docs => {
-      res.send(docs.books.filter(book => {
-        if (book.status === 'read')
-          return book;
-      }))
+      if (status.toLowerCase() === 'all') {
+        res.send(docs.books.filter(book => {
+          if (book.bookId !== null)
+            return book;
+        }))
+      }
+      else {
+        res.send(docs.books.filter(book => {
+          if (book.bookId !== null && book.status === status.toLowerCase())
+            return book;
+        }))
+      }
+
     })
     .catch(err => { next(createError(404, err.message)) })
-
 })
+// router.get('/books/all', function (req, res, next) {
+//   userModel.findById(req.user._id).populate('books.bookId')
+//     .exec()
+//     .then(docs => { res.send(docs.books) })
+//     .catch(err => { next(createError(404, err.message)) })
+// })
 
-router.get('/books/wanttoread', function (req, res, next) {
-  userModel.findById(req.user._id).populate('books.bookId')
-    .exec()
-    .then(docs => {
-      res.send(docs.books.filter(book => {
-        if (book.status === 'want to read')
-          return book;
-      }))
-    })
-    .catch(err => { next(createError(404, err.message)) })
+// router.get('/books/read', function (req, res, next) {
+//   userModel.findById(req.user._id).populate('books.bookId')
+//     .exec()
+//     .then(docs => {
+//       res.send(docs.books.filter(book => {
+//         if (book.status === 'read')
+//           return book;
+//       }))
+//     })
+//     .catch(err => { next(createError(404, err.message)) })
 
-})
+// })
 
-router.get('/books/currentlyreading', function (req, res, next) {
-  userModel.findById(req.user._id).populate('books.bookId')
-    .exec()
-    .then(docs => {
-      res.send(docs.books.filter(book => {
-        if (book.status === 'currently reading')
-          return book;
-      }))
-    })
-    .catch(err => { next(createError(404, err.message)) })
+// router.get('/books/wanttoread', function (req, res, next) {
+//   userModel.findById(req.user._id).populate('books.bookId')
+//     .exec()
+//     .then(docs => {
+//       res.send(docs.books.filter(book => {
+//         if (book.status === 'want to read')
+//           return book;
+//       }))
+//     })
+//     .catch(err => { next(createError(404, err.message)) })
 
-})
+// })
+
+// router.get('/books/currentlyreading', function (req, res, next) {
+//   userModel.findById(req.user._id).populate('books.bookId')
+//     .exec()
+//     .then(docs => {
+//       res.send(docs.books.filter(book => {
+//         if (book.status === 'currently reading')
+//           return book;
+//       }))
+//     })
+//     .catch(err => { next(createError(404, err.message)) })
+
+// })
 
 router.post('/book/edit/:id', function (req, res, next) {
 

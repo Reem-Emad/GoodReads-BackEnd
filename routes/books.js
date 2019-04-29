@@ -15,10 +15,31 @@ router.get('/', userAdminAuthorization, async function (req, res, next) {
 });
 //add new book
 router.post('/add', adminAuthorization, async function (req, res, next) {
-    await booksModel.create(req.body, function (err) {
-        if (err) return next(createError(400, err.message));
-        res.send('done');
-    });
+
+    booksModel.find({})
+        .exec()
+        .then(books => {
+            const matchedBook = books.find(book => {
+                if (book.title.toLowerCase() === req.body.title.toLowerCase()) {
+                    return book;
+                }
+            })
+            if (matchedBook === undefined) {
+                const { title, author, description, category, cover, numOfPages } = req.body;
+
+                booksModel.create({ title, author, description, category, cover, numOfPages })
+                    .then(newBook => res.send(newBook))
+                    .catch(err => { next(createError(404, err.message)); })
+
+            }
+            else {
+                res.send('book already exist')
+            }
+
+        })
+        .catch(err => { next(createError(404, err.message)); })
+
+
 });
 
 //search for books
@@ -45,7 +66,7 @@ router.get('/:id', userAdminAuthorization, async function (req, res, next) {
 
 });
 //update book
-router.patch('/:id', adminAuthorization, async function (req, res) {
+router.patch('/:id', adminAuthorization, async function (req, res,next) {
     const id = req.params.id;
     await booksModel.findByIdAndUpdate(id, req.body, { new: true }).populate('authorData')
         .exec()
@@ -53,8 +74,9 @@ router.patch('/:id', adminAuthorization, async function (req, res) {
         .catch(err => { next(createError(404, err.message)); })
 })
 //delete book
-router.delete('/:id', adminAuthorization, async function (req, res) {
+router.delete('/:id', adminAuthorization, async function (req, res,next) {
     const id = req.params.id;
+
     await booksModel.findByIdAndDelete(id, (err, result) => {
         if (err) return next(createError(404, err.message));
         res.send(result);

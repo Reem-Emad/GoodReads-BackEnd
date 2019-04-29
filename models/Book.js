@@ -4,7 +4,9 @@ const authorModel = require('../models/Author');
 const bookSchema = new mongoose.Schema({
     title: {
         type: String,
-        required: [true, 'book title is required']
+        required: [true, 'book title is required'],
+        unique: [true, 'book title must be unique'],
+
     },
     author: {
         type: String,

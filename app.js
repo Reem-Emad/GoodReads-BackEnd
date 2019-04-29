@@ -21,6 +21,7 @@ const app = express();
 app.use(cors());
 
 app.use(logger('dev'));
+app.use('/uploads', express.static('uploads'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
